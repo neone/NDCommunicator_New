@@ -1,13 +1,3 @@
-# Peer Calls v4
-
-![Peer Calls CI](https://github.com/peer-calls/peer-calls/workflows/Peer%20Calls%20CI/badge.svg)
-[![Go Report Card](https://goreportcard.com/badge/github.com/peer-calls/peer-calls)](https://goreportcard.com/report/github.com/peer-calls/peer-calls)
-
-WebRTC peer to peer calls for everyone. See it live in action at
-[peercalls.com][peer-calls].
-
-[peer-calls]: https://peercalls.com
-
 The server has been completely rewriten in Go and all the original
 functionality works. An optional implementation of a Selective Forwarding Unit
 (SFU) is available to make Peer Calls consume less bandwith for user video
@@ -16,47 +6,24 @@ uploads. This wouldn't haven been possible without the awesome
 
 [pion]: https://github.com/pion/webrtc
 
-The config file format is still YAML, but is different than what was in v3. The
-v3 source code is available in `version-3` branch.  Version 4 will no longer be
-published on NPM since the server is no longer written in NodeJS.
+# Endpoints
 
-# What's New in v4
+GET('/') - returns index page where you can enter custom room name, else, one is generated for you with UUID
 
-- [x] Core rewritten in Golang.
-- [x] Selective Forwarding Unit. Can be enabled using `NETWORK_TYPE=sfu` environment variable. The [peercalls.com][peer-calls] instance has this enabled.
-- [x] Ability to change video and audio devices without reconnecting.
-- [x] Improved toolbar layout. Can be toggled by clicking or tapping.
-- [x] Multiple videos are now shown in a full-size grid and each can be minimized.
-- [x] Video cropping can be turned off.
-- [x] Improved file sending. Users are now able to send files larger than 64 or 256 KB (depends on the browser).
-- [x] Device names are correctly populated in the dropdown list.
-- [x] Improved desktop sharing.
-- [x] Copy invite link to clipboard. Will show as share icon on devices that support it.
-- [x] Fix: Toolbar icons render correctly on iOS 12 devices.
-- [x] Fix: Video autoplays.
-- [x] Fix: Toolbar is no longer visible until call is joined
-- [x] Fix: Add warning when using an unsupported browser
-- [x] Fix: Add warning when JavaScript is disabled
+POST('/call’) - routes the initial requestor of the room to their newly created room
 
-## TODO for Selective Forwarding Unit
+GET('/call/{callID}') - gets the room with the passed in callID
 
-- [x] Support dynamic adding and removing of streams
-- [x] Support RTCP packet Picture Loss Indicator (PLI)
-- [x] Support RTCP packet Receiver Estimated Maximum Bitrate (REMB)
-- [ ] Add handling of other RTCP packets besides NACK, PLI and REMB
-- [x] Add JitterBuffer (experimental, currently without congestion control)
-- [ ] Support multiple Peer Calls nodes when using SFU
-- [x] Add support for passive ICE TCP candidates
-- [x] End-to-End Encryption (E2EE) using Insertable Streams. See [#142](https://github.com/peer-calls/peer-calls/pull/142).
+GET('/probes/liveness') - for monitoring, checks if the server is up
+
+GET('/metrics') - authorization based metrics viewing – uses prometheus.
 
 # Requirements
 
- - [Node.js 8][node] or [Node.js 12][node]
  - [Go 1.14][go]
 
 Alternatively, [Docker][docker] can be used to run Peer Calls.
 
-[node]: https://nodejs.org
 [go]: https://golang.org/
 [docker]: https://www.docker.com/
 
@@ -172,6 +139,8 @@ The default ICE servers in use are:
 - `stun:stun.l.google.com:19302`
 - `stun:global.stun.twilio.com:3478?transport=udp`
 
+For production it is necessary to deploy our own custom STUN/TURN servers
+
 Only a single ICE server can be defined via environment variables. To define
 more use a YAML config file. To load a config file, use the `-c
 /path/to/config.yml` command line argument.
@@ -285,23 +254,6 @@ go test ./...          run all server tests
 npm run ci             run all linting, tests and build the client-side
 ```
 
-# Browser Support
-
-Tested on Firefox and Chrome, including mobile versions. Also works on Safari
-and iOS since version 11. Does not work on Microsoft Edge because they do not
-support DataChannels yet.
-
-For more details, see here:
-
-- http://caniuse.com/#feat=rtcpeerconnection
-- http://caniuse.com/#search=getUserMedia
-
-In Firefox, it might be useful to use `about:webrtc` to debug connection
-issues. In Chrome, use `about:webrtc-internals`.
-
-When experiencing connection issues, the first thing to try is to have all
-peers to use the same browser.
-
 # ICE TCP
 
 Peer Calls supports ICE over TCP as described in RFC6544. Currently only
@@ -375,26 +327,3 @@ sudo systemctl enable coturn
 sudo systemctl start coturn
 ```
 
-# Contributing
-
-See [Contributing](CONTRIBUTING.md) section.
-
-If you encounter a bug, please open a new issue!
-
-# Support
-
-The development of Peer Calls is sponsored by [rondomoon][rondomoon]. If you'd
-like enterprise on-site support or become a sponsor, please contact
-[hello@rondomoon.com](mailto:hello@rondomoon.com).
-
-[rondomoon]: https://rondomoon.com
-
-If you wish to support future development of Peer Calls, you can donate here:
-
-[![Donate](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=364CXPNDPK2YG&source=url)
-
-Thank you ❤️
-
-# License
-
-[Apache 2.0](LICENSE)
