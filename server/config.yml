@@ -1,11 +1,11 @@
-base_url: /test
+base_url: ''
 ice_servers:
 - urls:
-  - 'stun:stun.l.google.com:19302'
+  - 'turn:coturn.communicator.neone.systems'
   auth_type: secret
   auth_secret:
-    username: test_user
-    secret: test_secret
+    username: neone
+    secret: "some-secret"
 tls:
   cert: test.pem
   key: test.key
@@ -15,3 +15,7 @@ store:
     host: localhost
     port: 6379
     prefix: peercalls
+network:
+  type: sfu
+    interfaces:
+      - eth0
